@@ -1,0 +1,432 @@
+@import url("leaflet/dist/leaflet.css");
+@import url("leaflet-draw/dist/leaflet.draw.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 218, 17%, 9%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 360 69% 49%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --info: 207 90% 54%;
+    --info-foreground: 210 40% 98%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 360 69% 49%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.625rem;
+
+    --slide-ease: cubic-bezier(0.4, -0.3, 0.6, 1.3);
+    --easing: var(--slide-ease);
+    --speed: 0.5s;
+    --theme-mode-toggle-width: clamp(30px, 20vmin, 64px);
+    --ar: 8 / 3;
+    --ray: hsl(0 0% 100% / 0.5);
+    --sun: hsl(47, 91%, 58%);
+    --moon: hsl(212, 13%, 82%);
+    --crater: hsl(221, 16%, 68%);
+    --bg: hsl(219, 30%, 12%);
+    --bear-speed: 10s;
+    --color: hsl(219 30% 20%);
+    --shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.03);
+  }
+
+  .dark {
+    --background: 218, 17%, 9%;
+    --foreground: 210 40% 98%;
+
+    --card: 213, 18%, 12%;
+    --card-foreground: 0 0% 93%;
+
+    --popover: 0 0% 22%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 360 69% 49%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --info: 207 90% 54%;
+    --info-foreground: 210 40% 98%;
+
+    --muted: 0 0% 17%;
+    --muted-foreground: 216 33% 97%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 360 69% 49%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 35%;
+    --input: 0 0% 19%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+html,
+body,
+main,
+:root {
+  height: 100%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+[data-dark-mode="true"] {
+  --bg: hsl(219, 30%, 12%);
+  --color: hsl(219 30% 98%);
+}
+
+.toggle__backdrop:first-of-type .clouds path:first-of-type {
+  fill: var(--ray);
+}
+
+.toggle {
+  -webkit-tap-highlight-color: transparent;
+  width: var(--theme-mode-toggle-width);
+
+  z-index: 10;
+  will-change: transform;
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
+
+  aspect-ratio: var(--ar);
+  border-radius: 100vh;
+  border: 0;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background var(--speed) var(--easing);
+  outline-color: transparent;
+  background: hsl(
+    calc(204 + (var(--dark, 0) * 25)) calc((53 - (var(--dark, 0) * 28)) * 1%)
+      calc((47 - (var(--dark, 0) * 31)) * 1%)
+  );
+}
+
+.toggle:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: calc(var(--theme-mode-toggle-width) * 0)
+      calc(var(--theme-mode-toggle-width) * -0.025)
+      calc(var(--theme-mode-toggle-width) * 0.025) 0 hsl(210 10% 10% / 0.15)
+      inset,
+    calc(var(--theme-mode-toggle-width) * 0)
+      calc(var(--theme-mode-toggle-width) * 0.025)
+      calc(var(--theme-mode-toggle-width) * 0.025) 0 hsl(210 10% 10% / 0.65)
+      inset;
+  border-radius: 100vh;
+}
+
+.toggle__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-radius: 100vh;
+  display: block;
+  clip-path: inset(0 0 0 0 round 100vh);
+}
+
+.toggle__backdrop {
+  overflow: visible !important;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  transition: translate var(--speed) var(--easing);
+  translate: 0
+    calc(var(--dark, 0) * (100% - (3 / 8 * var(--theme-mode-toggle-width))));
+}
+
+[aria-pressed="false"] .toggle__backdrop:last-of-type {
+  transition-timing-function: cubic-bezier(0.2, -0.6, 0.7, 1.6);
+}
+[aria-pressed="false"] .stars path {
+  transition-delay: 0s;
+}
+
+.stars path {
+  transform-box: fill-box;
+  transform-origin: 25% 50%;
+  scale: calc(0.25 + (var(--dark, 0) * 0.75));
+  transition: scale var(--speed) calc(var(--speed) * 0.5) var(--easing);
+}
+
+.toggle__indicator {
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: 0%;
+  display: grid;
+  place-items: center;
+  padding: 3%;
+}
+
+.toggle__star {
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+  transition: translate var(--speed) var(--easing);
+  translate: calc((var(--dark, 0) * -10%) + 5%) 0;
+}
+
+.sun {
+  background: var(--sun);
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: calc(var(--theme-mode-toggle-width) * 0.01)
+      calc(var(--theme-mode-toggle-width) * 0.01)
+      calc(var(--theme-mode-toggle-width) * 0.02) 0 hsl(210 10% 100% / 0.95)
+      inset,
+    calc(var(--theme-mode-toggle-width) * -0.01)
+      calc(var(--theme-mode-toggle-width) * -0.01)
+      calc(var(--theme-mode-toggle-width) * 0.02) 0 hsl(210 10% 20% / 0.5) inset;
+}
+.moon {
+  position: absolute;
+  inset: -1%;
+  border-radius: 50%;
+  background: var(--moon);
+  transition: translate var(--speed) ease-in-out;
+  translate: calc((100 - (var(--dark, 0) * 100)) * 1%) 0%;
+  box-shadow: calc(var(--theme-mode-toggle-width) * 0.01)
+      calc(var(--theme-mode-toggle-width) * 0.01)
+      calc(var(--theme-mode-toggle-width) * 0.02) 0 hsl(210 10% 100% / 0.95)
+      inset,
+    calc(var(--theme-mode-toggle-width) * -0.01)
+      calc(var(--theme-mode-toggle-width) * -0.01)
+      calc(var(--theme-mode-toggle-width) * 0.02) 0 hsl(210 10% 10% / 0.95)
+      inset;
+}
+
+.moon__crater {
+  position: absolute;
+  background: var(--crater);
+  border-radius: 50%;
+  width: calc(var(--size, 10) * 1%);
+  aspect-ratio: 1;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  box-shadow: calc(var(--theme-mode-toggle-width) * 0.01)
+      calc(var(--theme-mode-toggle-width) * 0.01)
+      calc(var(--theme-mode-toggle-width) * 0.01) 0 hsl(210 10% 6% / 0.25) inset,
+    0 calc(var(--theme-mode-toggle-width) * 0.005)
+      calc(var(--theme-mode-toggle-width) * 0.01) 0 hsl(210 10% 100% / 0.25);
+}
+
+.moon__crater:nth-of-type(1) {
+  --size: 18;
+  --x: 40;
+  --y: 15;
+}
+.moon__crater:nth-of-type(2) {
+  --size: 20;
+  --x: 65;
+  --y: 58;
+}
+.moon__crater:nth-of-type(3) {
+  --size: 34;
+  --x: 18;
+  --y: 40;
+}
+
+.toggle__star:before {
+  content: "";
+  z-index: -1;
+  width: 356%;
+  background: radial-gradient(hsl(0 0% 100% / 0.25) 40%, transparent 40.5%),
+    radial-gradient(hsl(0 0% 100% / 0.25) 56%, transparent 56.5%)
+      hsl(0 0% 100% / 0.25);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition: translate var(--speed) var(--easing);
+  translate: calc((50 - (var(--dark, 0) * 4)) * -1%) -50%;
+}
+
+.toggle__star:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: hsl(0 0% 0% / 0.5);
+  filter: blur(4px);
+  translate: 2% 4%;
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.toggle__indicator-wrapper {
+  position: absolute;
+  inset: 0;
+  transition: translate var(--speed) var(--slide-ease);
+  translate: calc(
+      var(--dark, 0) *
+        (
+          var(--theme-mode-toggle-width) -
+            (3 / 8 * var(--theme-mode-toggle-width))
+        )
+    )
+    0;
+}
+
+[aria-pressed="true"] {
+  --dark: 1;
+}
+
+.stars g {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+.stars g:nth-of-type(3) {
+  animation: twinkle 4s -2s infinite;
+}
+
+.stars g:nth-of-type(11) {
+  animation: twinkle 6s -2s infinite;
+}
+
+.stars g:nth-of-type(9) {
+  animation: twinkle 4s -1s infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  40%,
+  60%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0);
+  }
+}
+
+.controls {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: sans-serif;
+  color: var(--color);
+  transition: color var(--speed) var(--easing);
+}
+
+.markerPopup .leaflet-popup-content-wrapper {
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  border: 0.5px solid #b3b5bdb2;
+  filter: drop-shadow(0px 3px 6px rgba(10, 13, 16, 0.6));
+  backdrop-filter: blur(10px);
+}
+.markerPopup .leaflet-popup-tip {
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  border: 0.5px solid #b3b5bdb2;
+  filter: drop-shadow(0px 3px 6px rgba(10, 13, 16, 0.6));
+  backdrop-filter: blur(10px);
+}
+
+.markerPopup .leaflet-popup-close-button {
+  height: 42px !important;
+  width: 42px !important;
+  font: 30px Tahoma, Verdana, sans-serif !important;
+  color: #b3b5bd !important;
+}
+.markerPopup .leaflet-popup-close-button:hover {
+  color: #757575 !important;
+}
+
+.debug {
+  border: 1px solid red !important;
+}
+.debug > * {
+  border: 1px solid green !important;
+}
+.debug > * > * {
+  border: 1px solid green !important;
+}
+
+.bg-blur {
+  backdrop-filter: blur(0.5rem);
+}
+
+.hideInputNumberArrows::-webkit-outer-spin-button,
+.hideInputNumberArrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.hideInputNumberArrows {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.leaflet-container {
+  filter: invert(0%) hue-rotate(0) brightness(100%) contrast(100%);
+  transition: filter 0.5s;
+}
+.dark {
+  .leaflet-container {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+    transition: filter 0.5s;
+  }
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
+.react-flow__attribution{
+  display: none !important;
+}

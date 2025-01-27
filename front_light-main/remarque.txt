@@ -1,0 +1,5 @@
+statements[{
+    telemetryName: 'remarque',
+    value: 'remarque'
+    operator: 'equal'
+}]
