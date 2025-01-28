@@ -19,8 +19,8 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
+//import { ScrollArea } from "@/components/ui/scroll-area";
+import PolygoneIcon  from "@/assets/icons/polygon.svg?react";
 const ConfigPage = () => {
   const [showTypeMenu, setShowTypeMenu] = useState(true);
   const [selectedObjects, setSelectedObjects] = useState<string[]>([
@@ -64,7 +64,7 @@ const ConfigPage = () => {
     <div className="flex h-screen bg-[#1A1B1E] text-white">
       {/* Sidebar */}
       <div className="w-64 bg-[#1A1B1E] border-r border-zinc-800">
-        <ScrollArea className="h-screen">
+       
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-zinc-400">Gestion des licences</span>
@@ -112,7 +112,7 @@ const ConfigPage = () => {
               </div>
             ))}
           </div>
-        </ScrollArea>
+      
       </div>
 
       {/* Main Content */}
@@ -120,9 +120,9 @@ const ConfigPage = () => {
         <img
           src="images/cameraExample.png"
           alt="Video feed"
-          className="w-full h-full object-cover"
-          width={1000}
-          height={600}
+          className="absolute inset-0 w-full h-full object-cove"
+          width={2000}
+          height={1000}
         />
 
         {/* Floating Check Button */}
@@ -131,60 +131,38 @@ const ConfigPage = () => {
         </button>
 
         {/* Floating Menu */}
-        <div className="absolute left-4 top-1/4 bg-[#1A1B1E] text-white rounded-lg shadow-lg p-2 flex flex-col gap-4">
-          {/* Menu Icons */}
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <MoreVertical />
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <Share2 />
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <Crop />
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <RefreshCw />
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <Layers />
-          </button>
+        <div className="absolute left-4 top-1/4 bg-[#1A1B1E] text-white rounded-lg shadow-lg p-2 flex flex-col gap-4">  
         </div>
     {/* Icônes */}
-        <div className="absolute top-1/4 right-4 flex flex-col gap-4 bg-[#1A1B1E] p-2 shadow-sm">
-  {/* Icône ZoomIn */}
-  <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <MoreVertical className="w-6 h-6 text-white"/>
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <Share2 className="w-6 h-6 text-white" />
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <Crop className="w-6 h-6 text-white"/>
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <RefreshCw className="w-6 h-6 text-white"/>
-          </button>
-          <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
-            <Layers className="w-6 h-6 text-white"/>
-            </button>
-  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C2D31] hover:bg-zinc-700">
-    <ZoomIn className="w-6 h-6 text-white" />
-  </button>
-  
-  {/* Icône ZoomOut */}
-  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C2D31] hover:bg-zinc-700">
-    <ZoomOut className="w-6 h-6 text-white" />
-  </button>
-  
-  {/* Icône Rotate */}
-  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C2D31] hover:bg-zinc-700">
-    <RotateCcw className="w-6 h-6 text-white" />
-  </button>
+    <div className="absolute top-1/4 right-4 flex flex-col gap-2 bg-[#1A1B1E] p-2 shadow-sm max-h-screen">
+  <div className="grid grid-cols-1 auto-rows-min gap-2">
+    <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
+      <PolygoneIcon className="w-6 h-6 text-white" />
+    </button>
+    <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
+      <PolygoneIcon className="w-6 h-6 text-white" />
+    </button>
+    <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
+      <Crop className="w-6 h-6 text-white" />
+    </button>
+    <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
+      <RefreshCw className="w-6 h-6 text-white" />
+    </button>
+    <button className="flex items-center justify-center w-10 h-10 rounded hover:bg-zinc-700">
+      <Layers className="w-6 h-6 text-white" />
+    </button>
+    <button className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C2D31] hover:bg-zinc-700">
+      <ZoomIn className="w-6 h-6 text-white" />
+    </button>
+    <button className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C2D31] hover:bg-zinc-700">
+      <ZoomOut className="w-6 h-6 text-white" />
+    </button>
+  </div>
 </div>
 
         {/* Type/Category Selection Menu */}
         {showTypeMenu && (
-  <div className="absolute left-4 top-20 w-64 bg-[#1A1B1E] rounded-lg shadow-lg border border-zinc-800">
+  <div className="absolute left-4 top-20 w-64 bg-[#1A1B1E]  shadow-lg border border-zinc-800">
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">Type/Catégorie</span>
